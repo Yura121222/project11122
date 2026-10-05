@@ -6,33 +6,31 @@ import {
   Pressable,
   Text,
 } from "react-native";
-import Item from "../../components/ListItem";
+import { useSelector } from "react-redux";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { COLORS_DARK } from "../../constants";
+
+import Item from "../../components/ListItem";
 
 function AllWords({ navigation }) {
-  const words = [];
+  const words = useSelector((state) => state.wordsLearning.words);
+  const colors = useSelector((state) => state.theme.colors);
 
   return (
     <>
       <Pressable
-        style={styles.addPressable}
+        style={[styles.addPressable, { backgroundColor: colors.primary900 }]}
         onPress={() => navigation.navigate("AddWord")}
       >
-        <Ionicons
-          name="add-outline"
-          size={46}
-          color={COLORS_DARK.fontInverse}
-        />
+        <Ionicons name="add-outline" size={46} color={colors.fontInverse} />
       </Pressable>
-      <View style={{ flex: 2 }}>
+      <View style={{ flex: 2, backgroundColor: colors.appBackground }}>
         <FlatList
           data={words}
           renderItem={({ item }) => <Item item={item} />}
           keyExtractor={(item) => item.word}
           ListEmptyComponent={
-            <View style={styles.empty}>
-              <Text style={styles.textEmpty}>No words yet</Text>
+            <View style={{ ...styles.empty, backgroundColor: colors.fontInverse }}>
+              <Text style={[styles.textEmpty, { color: colors.primary200 }]}>No words yet</Text>
             </View>
           }
           ListHeaderComponent={
@@ -65,7 +63,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     top: 200,
     right: "10%",
-    backgroundColor: COLORS_DARK.primary900,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 10,
@@ -80,14 +77,12 @@ const styles = StyleSheet.create({
   },
   empty: {
     height: 300,
-    backgroundColor: COLORS_DARK.fontInverse,
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
   },
   textEmpty: {
     fontSize: 40,
-    color: COLORS_DARK.primary200,
   },
 });
 

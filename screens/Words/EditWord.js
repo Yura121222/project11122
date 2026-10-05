@@ -9,12 +9,17 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { playSound } from "../../services/soundHandler";
 import { useState } from "react";
-import { COLORS_DARK } from "../../constants";
+import { useDispatch, useSelector } from "react-redux";
+
+import { wordsLearningActions } from "../../store/wordsLearningSlice";
 
 function EditWord({ route, navigation }) {
+  const dispatch = useDispatch();
+  const colors = useSelector((state) => state.theme.colors);
   const [wordData, setWordData] = useState(() => route.params.wordData);
 
   function onSave() {
+    dispatch(wordsLearningActions.updateWord(wordData));
     navigation.navigate("AllWords");
   }
 
@@ -39,41 +44,37 @@ function EditWord({ route, navigation }) {
 
       <View style={styles.receivedInfoContainer}>
         <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-          <Text style={styles.word}>{wordData.word}</Text>
+          <Text style={[styles.word, { color: colors.fontMain }]}>{wordData.word}</Text>
           {wordData.audio && (
             <Pressable
               style={styles.playPressable}
               onPress={() => playSound(wordData.audio)}
             >
-              <Ionicons
-                name="volume-medium-outline"
-                size={28}
-                color={COLORS_DARK.primary900}
-              />
+              <Ionicons name="volume-medium-outline" size={28} color={colors.primary900} />
             </Pressable>
           )}
         </View>
         <View style={{ flexDirection: "row", alignItems: "baseline", gap: 10 }}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>phonetics:</Text>
+            <Text style={[styles.label, { color: colors.grey600 }]}>phonetics:</Text>
             <TextInput
               value={wordData.phonetics}
-              style={styles.input}
+              style={[styles.input, { borderColor: colors.primary200, color: colors.fontMain }]}
               onChangeText={(text) => onChangeWordData(text, "phonetics")}
             />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.label}>part of speach:</Text>
+            <Text style={[styles.label, { color: colors.grey600 }]}>part of speach:</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { borderColor: colors.primary200, color: colors.fontMain }]}
               value={wordData.partOfSpeech}
               onChangeText={(text) => onChangeWordData(text, "partOfSpeech")}
             />
           </View>
         </View>
-        <Text style={styles.label}>meaning:</Text>
+        <Text style={[styles.label, { color: colors.grey600 }]}>meaning:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: colors.primary200, color: colors.fontMain }]}
           multiline
           numberOfLines={4}
           onChangeText={(text) => onChangeWordData(text, "meaning")}
@@ -81,10 +82,11 @@ function EditWord({ route, navigation }) {
           textAlignVertical={"top"}
         />
         {wordData.word && (
-          <Pressable style={styles.buttonContainer} onPress={onSave}>
-            <Text style={{ fontSize: 24, color: COLORS_DARK.fontInverse }}>
-              Save
-            </Text>
+          <Pressable
+            style={[styles.buttonContainer, { backgroundColor: colors.primary900 }]}
+            onPress={onSave}
+          >
+            <Text style={{ fontSize: 24, color: colors.fontInverse }}>Save</Text>
           </Pressable>
         )}
       </View>
@@ -97,12 +99,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 6,
-    borderColor: COLORS_DARK.primary200,
-    color: COLORS_DARK.fontMain,
   },
   label: {
     fontSize: 12,
-    color: COLORS_DARK.grey600,
     marginBottom: 4,
     paddingTop: 10,
   },
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
   word: {
     fontSize: 32,
     paddingHorizontal: 10,
-    color: COLORS_DARK.fontMain,
   },
   phonetics: {
     fontSize: 20,
@@ -134,22 +132,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     borderRadius: 4,
-    backgroundColor: COLORS_DARK.primary900,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 14,
-  },
-  backPressable: {
-    position: "absolute",
-    width: 60,
-    borderRadius: 30,
-    aspectRatio: 1,
-    top: "2%",
-    left: "2%",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
   },
   playPressable: {
     marginHorizontal: 20,

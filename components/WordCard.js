@@ -1,22 +1,26 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { playSound } from "../services/soundHandler";
-import { COLORS_DARK } from "../constants";
+import { wordsLearningActions } from "../store/wordsLearningSlice";
 
 function WordCard({ wordInfo, setNext }) {
+  const dispatch = useDispatch();
+  const colors = useSelector((state) => state.theme.colors);
   const [showFullInfo, setShowFullInfo] = useState(false);
 
   return (
     <View style={styles.container}>
       <Pressable
-        style={styles.wordContainer}
+        style={[styles.wordContainer, { borderColor: colors.primary200 }]}
         onPress={() => setShowFullInfo(true)}
       >
-        <Text style={styles.word}>{wordInfo.word}</Text>
+        <Text style={[styles.word, { color: colors.fontMain }]}>{wordInfo.word}</Text>
         {showFullInfo && (
           <>
-            <Text style={styles.phonetics}>{wordInfo.phonetics}</Text>
+            <Text style={[styles.phonetics, { color: colors.fontMain }]}>{wordInfo.phonetics}</Text>
             <Pressable
               style={styles.playPressable}
               onPress={() => playSound(wordInfo.audio)}
@@ -24,10 +28,10 @@ function WordCard({ wordInfo, setNext }) {
               <Ionicons
                 name="volume-medium-outline"
                 size={28}
-                color={COLORS_DARK.primary900}
+                color={colors.primary900}
               />
             </Pressable>
-            <Text style={styles.meaning}>{wordInfo.meaning}</Text>
+            <Text style={[styles.meaning, { color: colors.fontMain }]}>{wordInfo.meaning}</Text>
           </>
         )}
       </Pressable>
@@ -41,12 +45,12 @@ function WordCard({ wordInfo, setNext }) {
             style={({ pressed }) => [
               styles.remember,
               {
-                backgroundColor: COLORS_DARK.secondary800,
+                backgroundColor: colors.secondary800,
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
           >
-            <Text style={styles.rememberText}>Didn't know it</Text>
+            <Text style={[styles.rememberText, { color: colors.fontInverse }]}>Didn't know it</Text>
           </Pressable>
           <Pressable
             onPress={() => {
@@ -56,12 +60,12 @@ function WordCard({ wordInfo, setNext }) {
             style={({ pressed }) => [
               styles.remember,
               {
-                backgroundColor: COLORS_DARK.primary900,
+                backgroundColor: colors.primary900,
                 opacity: pressed ? 0.7 : 1,
               },
             ]}
           >
-            <Text style={styles.rememberText}>Knew it</Text>
+            <Text style={[styles.rememberText, { color: colors.fontInverse }]}>Knew it</Text>
           </Pressable>
         </View>
       )}
@@ -75,7 +79,6 @@ const styles = StyleSheet.create({
   },
   wordContainer: {
     flex: 4,
-    borderColor: COLORS_DARK.primary200,
     margin: 10,
     borderWidth: 1,
     borderRadius: 4,
@@ -85,16 +88,13 @@ const styles = StyleSheet.create({
   },
   word: {
     fontSize: 28,
-    color: COLORS_DARK.fontMain,
     fontWeight: "800",
   },
   phonetics: {
     fontSize: 18,
-    color: COLORS_DARK.fontMain,
   },
   meaning: {
     fontSize: 18,
-    color: COLORS_DARK.fontMain,
   },
   remember: {
     flex: 1,
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   },
   rememberText: {
     fontSize: 20,
-    color: COLORS_DARK.fontInverse,
   },
   buttonsContainer: {
     flex: 1,
